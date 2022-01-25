@@ -16,7 +16,7 @@ class CreateCareersTable extends Migration
         Schema::create('careers', function (Blueprint $table) {
             $table->id();
             $table
-                ->foreignId('user_id')
+                ->foreignId('userId')
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
