@@ -16,7 +16,7 @@ class CreateOrganizationsTable extends Migration
         Schema::create('organizations', function (Blueprint $table) {
             $table->id();
             $table
-                ->foreignId('userId')
+                ->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();

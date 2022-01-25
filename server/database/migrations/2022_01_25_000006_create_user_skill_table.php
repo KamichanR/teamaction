@@ -15,17 +15,17 @@ class CreateUserSkillTable extends Migration
     {
         Schema::create('user_skill', function (Blueprint $table) {
             $table
-                ->foreignId('userId')
+                ->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table
-                ->foreignId('skillId')
+                ->foreignId('skill_id')
                 ->constrained('skills')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->primary(['userId', 'skillId']);
+            $table->primary(['user_id', 'skill_id']);
         });
     }
 

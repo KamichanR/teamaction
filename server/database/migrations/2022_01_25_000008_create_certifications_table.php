@@ -16,7 +16,7 @@ class CreateCertificationsTable extends Migration
         Schema::create('certifications', function (Blueprint $table) {
             $table->id();
             $table
-                ->foreignId('userId')
+                ->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();

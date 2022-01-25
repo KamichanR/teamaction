@@ -17,21 +17,21 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username', 32);
             $table->string('uid')->unique();
-            $table->boolean('linkedWithTwitter')->default(false);
-            $table->boolean('linkedWithGoogle')->default(false);
-            $table->string('twitterUri')->nullable();
-            $table->string('facebookUri')->nullable();
-            $table->string('websiteUri')->nullable();
+            $table->boolean('linked_with_twitter')->default(false);
+            $table->boolean('linked_with_google')->default(false);
+            $table->string('twitter_uri')->nullable();
+            $table->string('facebook_uri')->nullable();
+            $table->string('website_uri')->nullable();
             $table
-                ->string('usericonImageUri')
+                ->string('usericon_image_uri')
                 ->default('https://firebasestorage.googleapis.com/v0/b/connect-335200.appspot.com/o/default_usericon_image.jpg?alt=media&token=685d350d-140e-4a60-8025-391b297edcb7');
             $table
-                ->foreignId('areaId')
+                ->foreignId('area_id')
                 ->nullable()
                 ->constrained('areas')
                 ->cascadeOnUpdate();
             $table->text('introduction', 500)->nullable();
-            $table->text('wannaDo', 500)->nullable();
+            $table->text('wanna_do', 500)->nullable();
             $table->timestamps();
         });
     }

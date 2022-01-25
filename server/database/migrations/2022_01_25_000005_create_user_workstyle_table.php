@@ -15,17 +15,17 @@ class CreateUserWorkstyleTable extends Migration
     {
         Schema::create('user_workstyle', function (Blueprint $table) {
             $table
-                ->foreignId('userId')
+                ->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table
-                ->foreignId('workstyleId')
+                ->foreignId('workstyle_id')
                 ->constrained('workstyles')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->primary(['userId', 'workstyleId']);
+            $table->primary(['user_id', 'workstyle_id']);
         });
     }
 
