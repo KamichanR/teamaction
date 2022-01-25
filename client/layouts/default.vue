@@ -2,9 +2,8 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
       fixed
+      clipped
       app
     >
       <v-list>
@@ -24,20 +23,43 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
+    <v-app-bar fixed clipped-left app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
       <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+      <v-spacer/>
+      <div v-if="$auth.loggedIn">
+        <v-btn
+          class="mx-2"
+          @click="$auth.logout()"
+        >
+          ログアウト
+        </v-btn>
+        <v-btn
+          class="mx-2"
+          to="/projects/create"
+        >
+          新規作成
+        </v-btn>
+      </div>
+      <div v-else>
+        <v-btn
+          class="mx-2"
+          to="/register"
+        >
+          新規登録
+        </v-btn>
+        <v-btn
+          class="mx-2"
+          to="/login"
+        >
+          ログイン
+        </v-btn>
+      </div>
+      <v-btn
+        v-if="$auth.loggedIn"
+        icon
+        @click.stop="rightDrawer = !rightDrawer"
+      >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
@@ -46,30 +68,59 @@
         <Nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
+    <v-navigation-drawer
+      v-if="$auth.loggedIn"
+      v-model="rightDrawer"
+      fixed
+      right
+      temporary
+    >
       <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light> mdi-repeat </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
+        <v-list-item>
+          <v-btn block :disabled="disabledButton">
+            プロフィール
+          </v-btn>
+        </v-list-item>
+        <v-divider/>
+        <v-list-item>
+          <v-btn block :disabled="disabledButton" @click="linkWithProvider('twitter')">
+            <v-icon class="mr-2" color="#1DA1F2">
+              mdi-twitter
+            </v-icon>
+            <span>
+              Twitterと連携
+            </span>
+          </v-btn>
+        </v-list-item>
+        <v-list-item>
+          <v-btn :disabled="disabledButton" block>
+            <v-icon class="mr-2" color="#4285F4">
+              mdi-google
+            </v-icon>
+            <span>
+              Googleと連携
+            </span>
+          </v-btn>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-footer :absolute="!fixed" app>
+    <v-footer absolute app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+import { getAuth, GoogleAuthProvider, linkWithPopup, TwitterAuthProvider } from '@firebase/auth';
+
 export default {
   name: 'DefaultLayout',
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
+      disabledButton: false,
+      linkWithTwitterLoading: false,
+      linkWithGoogleLoading: false,
+      drawer: true,
       items: [
         {
           icon: 'mdi-apps',
@@ -82,10 +133,41 @@ export default {
           to: '/inspire',
         },
       ],
-      miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Vuetify.js',
+      title: 'TEAMACTION',
+    }
+  },
+  methods: {
+    async linkWithProvider($provider) {
+      // 変数宣言
+      let auth, provider;
+
+      // ボタンの制限
+      this.disabledButton = true;
+
+      try {
+        // 外部アカウントの連携
+        auth = getAuth();
+        switch ($provider) {
+          case 'twitter':
+            this.linkWithTwitterLoading = true;
+            provider = new TwitterAuthProvider();
+            break;
+          case 'google':
+            this.linkWithGoogleLoading = true;
+            provider = new GoogleAuthProvider();
+            break;
+          default:
+            throw new Error('エラー');
+        }
+        await linkWithPopup(auth.currentUser, provider);
+        this.$axios.get(`/api/auth/twitter`);
+      } catch (error) {
+        this.linkWithTwitterLoading = false;
+        this.linkWithGoogleLoading = false;
+        this.disabledButton = false;
+      }
     }
   },
 }
