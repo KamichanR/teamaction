@@ -83,7 +83,12 @@
         </v-list-item>
         <v-divider/>
         <v-list-item>
-          <v-btn block :disabled="disabledButton" @click="linkWithProvider('twitter')">
+          <v-btn
+            block
+            :disabled="disabledButton || ($auth.user.linked_with_twitter === 1)"
+            :loading="linkWithTwitterLoading"
+            @click="linkWithProvider('twitter')"
+          >
             <v-icon class="mr-2" color="#1DA1F2">
               mdi-twitter
             </v-icon>
@@ -93,7 +98,12 @@
           </v-btn>
         </v-list-item>
         <v-list-item>
-          <v-btn :disabled="disabledButton" block>
+          <v-btn
+            block
+            :disabled="disabledButton || ($auth.user.linked_with_google === 1)"
+            :loading="linkWithGoogleLoading"
+            @click="linkWithProvider('google')"
+          >
             <v-icon class="mr-2" color="#4285F4">
               mdi-google
             </v-icon>
@@ -162,7 +172,12 @@ export default {
             throw new Error('エラー');
         }
         await linkWithPopup(auth.currentUser, provider);
-        this.$axios.get(`/api/auth/twitter`);
+
+        // ユーザー情報の更新
+        await this.$axios.get(`/api/auth/${$provider}`);
+
+        // 再読み込み
+        location.reload();
       } catch (error) {
         this.linkWithTwitterLoading = false;
         this.linkWithGoogleLoading = false;
