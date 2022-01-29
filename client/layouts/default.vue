@@ -77,7 +77,11 @@
     >
       <v-list>
         <v-list-item>
-          <v-btn block :disabled="disabledButton">
+          <v-btn
+            block
+            :to="`/users/${$auth.user.id}`"
+            :disabled="disabledButton"
+          >
             プロフィール
           </v-btn>
         </v-list-item>
