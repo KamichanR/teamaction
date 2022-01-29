@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserSkillTable extends Migration
+class CreateSkillUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -22,7 +22,6 @@ class CreateUserSkillTable extends Migration
             $table
                 ->foreignId('skill_id')
                 ->constrained('skills')
-                ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
             $table->primary(['user_id', 'skill_id']);

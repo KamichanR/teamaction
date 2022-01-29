@@ -22,7 +22,6 @@ class CreateUserWorkstyleTable extends Migration
             $table
                 ->foreignId('workstyle_id')
                 ->constrained('workstyles')
-                ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
             $table->primary(['user_id', 'workstyle_id']);

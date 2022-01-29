@@ -22,9 +22,9 @@ class CreateCareersTable extends Migration
                 ->cascadeOnUpdate();
             $table->date('begin');
             $table->date('end')->nullable();
-            $table->string('organization');
-            $table->string('position');
-            $table->text('description', 500);
+            $table->string('company');
+            $table->string('position')->nullable();
+            $table->text('description', 500)->nullable();
         });
     }
 
