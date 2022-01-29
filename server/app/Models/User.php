@@ -27,8 +27,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'uid',
+        'pivot',
     ];
 
     /**
@@ -39,4 +39,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function organizations() {
+        return $this->hasMany(Organization::class);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    public function workstyles()
+    {
+        return $this->belongsToMany(Workstyle::class);
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class);
+    }
+
+    public function careers()
+    {
+        return $this->hasMany(Career::class);
+    }
+
+    public function certifications()
+    {
+        return $this->hasMany(Certification::class);
+    }
 }

@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Skill extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
+
+    function user()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }
