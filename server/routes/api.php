@@ -29,3 +29,10 @@ Route::post('auth/logout', [LogoutController::class, 'logout'])
 
 Route::get('auth/{provider}', [UserController::class, 'linkWithProvider'])
     ->middleware('auth');
+
+Route::get('data/user/edit', [UserController::class, 'getEditData']);
+
+Route::get('data/user/{userId}', [UserController::class, 'getUserData'])
+    ->where('userid', '[0-9]+');
+
+Route::patch('update/user', [UserController::class, 'updateUser']);
