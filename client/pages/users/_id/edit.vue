@@ -292,13 +292,16 @@ export default {
       },
     },
   },
-  async asyncData({ params, $axios, error, $auth }) {
+  middleware: [
+    'loggedIn',
+    'isAuthenticated',
+  ],
+  async asyncData({ params, $axios, error }) {
     // ユーザー情報取得
     const user = await $axios.$get(`api/data/user/${params.id}`);
     const data = await $axios.$get('api/data/user/edit');
 
     if (!user) error({ statusCode: 404 });
-    if (!($auth.loggedIn && $auth.user.id === user.userId)) error({ statusCode: 403 });
 
     // Firebase Storageから画像を取得
     const usericonImage = await fetch(user.usericonImageUri)
@@ -364,7 +367,7 @@ export default {
     // 入力された画像のURLを取得
     usericonImageUri() {
       // 入力されていない場合はデフォルトアイコンにする
-      if (!this.usericonImage) return 'https://firebasestorage.googleapis.com/v0/b/connect-335200.appspot.com/o/default_usericon_image.jpg';
+      if (!this.usericonImage) return 'https://firebasestorage.googleapis.com/v0/b/connect-335200.appspot.com/o/default_usericon_image.jpg?alt=media&token=64fae014-0bfa-4cc7-9404-7906eace4642';
       const uri = URL.createObjectURL(this.usericonImage);
       return uri;
     }
@@ -445,7 +448,7 @@ export default {
         await uploadBytes(storageRef, this.usericonImage);
         this.user.usericonImageUri = await getDownloadURL(storageRef);
       } else {
-        this.user.usericonImageUri = 'https://firebasestorage.googleapis.com/v0/b/connect-335200.appspot.com/o/default_usericon_image.jpg';
+        this.user.usericonImageUri = 'https://firebasestorage.googleapis.com/v0/b/connect-335200.appspot.com/o/default_usericon_image.jpg?alt=media&token=64fae014-0bfa-4cc7-9404-7906eace4642';
       }
 
       // ユーザー情報の更新

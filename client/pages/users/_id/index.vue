@@ -209,7 +209,7 @@ export default {
   async asyncData({ params, $axios, error }) {
     const user = await $axios.$get(`api/data/user/${params.id}`);
 
-    if (!user) error({ statusCode: 404 });
+    if (!user) return error({ statusCode: 404 });
 
     return {
       user,
