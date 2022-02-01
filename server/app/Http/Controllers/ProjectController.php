@@ -99,6 +99,43 @@ class ProjectController extends Controller
 
     public function updateProject(Request $request)
     {
-        $project = Project::find($request->)
+        $project = Project::find($request->id);
+
+        $project->update([
+            'project_title' => $request->projectTitle,
+            'project_image_uri' => $request->projectImageUri,
+            'area_id' => $request->area['id'],
+            'project_category_id' => $request->projectCategory['id'],
+            'purpose' => $request->purpose,
+            'description' => $request->description,
+            'ideal_candidate' => $request->idealCandidate,
+            'merit' => $request->merit,
+        ]);
+
+        DB::table('project_skill')
+            ->where('user_id', $request->userId)
+            ->delete();
+
+        foreach ($request->skills as $skill) {
+            DB::table('project_skill')
+                ->insert([
+                    'user_id' => $request->userId,
+                    'skill_id' => $skill['id'],
+                ]);
+        }
+
+        ProjectRole::where('project_id', $project->id)
+            ->delete();
+
+        foreach ($request->projectRoles as $role) {
+            ProjectRole::create([
+                'project_id' => $role->id,
+                'role_title' => $role->role_title,
+                'number_of_applicants' => $role->number_of_applicants,
+                'description' => $role->description,
+            ]);
+        }
+
+        return response(null, Response::HTTP_OK);
     }
 }
