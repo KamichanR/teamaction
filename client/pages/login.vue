@@ -83,7 +83,7 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, minLength, email } from 'vuelidate/lib/validators';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, TwitterAuthProvider } from '@firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, TwitterAuthProvider } from '@firebase/auth';
 
 export default {
   name: 'LoginPage',
@@ -160,7 +160,7 @@ export default {
             break;
           case 'google':
             this.loginWithGoogleLoading = true;
-            provider = new TwitterAuthProvider();
+            provider = new GoogleAuthProvider();
             userCredentials = await signInWithPopup(auth, provider);
             break;
           default:
