@@ -7,5 +7,8 @@
 <script>
 export default {
   name: 'UsersPage',
+  async asyncData({ $axios }) {
+
+  }
 }
 </script>
