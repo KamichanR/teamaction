@@ -47,5 +47,9 @@ Route::get('data/project', [ProjectController::class, 'getCreateData']);
 // プロジェクトの作成
 Route::post('create/project', [ProjectController::class, 'createProject']);
 
+// プロジェクト情報を取得
 Route::get('data/project/{projectId}', [ProjectController::class, 'readProject'])
     ->where('userid', '[0-9]+');
+
+// プロジェクト情報の更新
+Route::patch('update/project', [ProjectController::class, 'updateProject']);

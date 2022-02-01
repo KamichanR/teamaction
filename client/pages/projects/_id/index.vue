@@ -8,6 +8,15 @@
       />
 
       <v-list class="my-8 px-8 pb-8">
+        <v-list-item class="d-flex justify-end">
+          <a
+            v-if="$auth.loggedIn && $auth.user.id === project.userId"
+            :href="`/projects/${project.userId}/edit`"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </a>
+        </v-list-item>
+
         <v-subheader class="black--text">
           <h1>{{ project.projectTitle }}</h1>
         </v-subheader>

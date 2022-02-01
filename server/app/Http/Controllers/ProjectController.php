@@ -76,6 +76,7 @@ class ProjectController extends Controller
         $user = $data->user()->first();
 
         $tmp = [
+            'id' => $data->id,
             'userId' => $data->user_id,
             'projectTitle' => $data->project_title,
             'projectImageUri' => $data->project_image_uri,
@@ -94,5 +95,10 @@ class ProjectController extends Controller
         $project = json_encode($tmp);
 
         return response($project, Response::HTTP_OK);
+    }
+
+    public function updateProject(Request $request)
+    {
+        $project = Project::find($request->)
     }
 }

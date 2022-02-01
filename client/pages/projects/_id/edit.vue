@@ -3,12 +3,12 @@
     <v-card class="my-8 pa-8">
       <v-list>
         <v-subheader class="black--text">
-          <h1>プロジェクト作成</h1>
+          <h1>プロジェクト編集</h1>
         </v-subheader>
 
         <v-subheader class="black--text">
-        <h2>プロジェクトの基本情報</h2>
-      </v-subheader>
+          <h2>プロジェクトの基本情報</h2>
+        </v-subheader>
 
         <v-list-item>
           <v-text-field
@@ -151,9 +151,9 @@
         :role="role"
         @deleteRole="deleteProjectRole(index)"
         @updateRoleInvalid="updateProjectRoleInvalid($event, index)"
-        @updateRoleTitle="role.roleTitle = $event"
+        @updateRoleTitle="role.role_title = $event"
         @updateClose="role.close = $event"
-        @updateNumberOfApplicants="role.numberOfApplicants = $event"
+        @updateNumberOfApplicants="role.number_of_applicants = $event"
         @updateDescription="role.description = $event"
       />
 
@@ -174,9 +174,21 @@
           :disabled="$v.$invalid || childComponentsInvalids"
           @click="createProject"
         >
-          作成
+          更新
         </v-btn>
       </div>
+    </v-card>
+
+    <v-card>
+      {{ project }}
+    </v-card>
+
+    <v-card>
+      {{ projectRolesInvalids }}
+    </v-card>
+
+    <v-card>
+      {{ childComponentsInvalids }}
     </v-card>
   </main>
 </template>
@@ -185,17 +197,20 @@
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import ProjectRole from '@/components/projects/ProjectRole';
+import ProjectRole from '@/components/projects/edit/ProjectRole';
 
 export default {
-  name: 'ProjectCreatesPage',
+  name: 'ProjectEditPage',
   components: {
     ProjectRole,
   },
   mixins: [
     validationMixin,
   ],
-  middleware: 'loggedIn',
+  middleware: [
+    'loggedIn',
+    'isAuthenticated',
+  ],
   validations: {
     project: {
       projectTitle: {
@@ -224,41 +239,31 @@ export default {
       },
     },
   },
-  async asyncData({ $axios, $auth }) {
+  async asyncData({ params, $axios, error }) {
+    // プロジェクト情報取得
+    const project = await $axios.$get(`api/data/project/${params.id}`);
+    if (!project) error({ statusCode: 404 });
+
     const data = await $axios.$get('api/data/project');
 
     // 役割のバリデーション
-    const projectRolesInvalids = [true];
+    const projectRolesInvalids = new Array(project.projectRoles.length).fill(false);
 
     // すべての子コンポーネントのバリデーション結果
-    const childComponentsInvalids = true;
+    const childComponentsInvalids = false;
+
+    // 画像の取得
+    const projectImage = await fetch(project.projectImageUri)
+      .then(res => res.blob())
+      .then(blob => new File([blob], project.projectImageUri));
 
     return {
       data,
-      project: {
-        userId: $auth.user.id,
-        projectTitle: '',
-        projectImageUri: '',
-        area: '',
-        projectCategory: '',
-        skills: [],
-        purpose: '',
-        description: '',
-        idealCandidate: '',
-        merit: '',
-        projectRoles: [
-          {
-            roleTitle: '',
-            numberOfApplicants: '',
-            close: '',
-            description: '',
-          }
-        ],
-      },
-      projectImage: null,
+      project,
+      projectImage,
       projectRolesInvalids,
-      childComponentsInvalids
-    }
+      childComponentsInvalids,
+    };
   },
   computed: {
     projectTitleErrors() {
@@ -327,8 +332,8 @@ export default {
     },
     addProjectRole() {
       const projectRole = {
-        roleTitle: '',
-        numberOfApplicants: '',
+        role_title: '',
+        number_of_applicants: '',
         close: '',
         description: '',
       };
@@ -351,7 +356,7 @@ export default {
       }
 
       // プロジェクトの作成とIDの取得
-      const projectId = await this.$axios.$post('/api/update/project', this.project);
+      const projectId = await this.$axios.$post('/api/create/project', this.project);
 
       this.$router.push(`/projects/${projectId}`);
     },
