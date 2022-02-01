@@ -25,7 +25,11 @@
     </v-navigation-drawer>
     <v-app-bar fixed clipped-left app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title
+        style="cursor:pointer"
+        @click="$router.push('/')"
+        v-text="title"
+      />
       <v-spacer/>
       <div v-if="$auth.loggedIn">
         <v-btn
@@ -137,14 +141,14 @@ export default {
       drawer: true,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/',
+          icon: 'mdi-account-group',
+          title: 'ユーザー',
+          to: '/users',
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
+          icon: 'mdi-file-document',
+          title: 'プロジェクト',
+          to: '/projects',
         },
       ],
       right: true,
