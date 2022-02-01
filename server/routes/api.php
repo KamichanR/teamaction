@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,9 +31,18 @@ Route::post('auth/logout', [LogoutController::class, 'logout'])
 Route::get('auth/{provider}', [UserController::class, 'linkWithProvider'])
     ->middleware('auth');
 
+// ユーザー情報編集に必要なデータを取得
 Route::get('data/user/edit', [UserController::class, 'getEditData']);
 
+// ユーザー情報を取得
 Route::get('data/user/{userId}', [UserController::class, 'getUserData'])
     ->where('userid', '[0-9]+');
 
+// ユーザー情報の更新
 Route::patch('update/user', [UserController::class, 'updateUser']);
+
+// プロジェクト作成に必要な情報を取得
+Route::get('data/project', [ProjectController::class, 'getCreateData']);
+
+// プロジェクトの作成
+Route::post('create/project', [ProjectController::class, 'createProject']);
