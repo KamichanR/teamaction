@@ -138,4 +138,15 @@ class ProjectController extends Controller
 
         return response(null, Response::HTTP_OK);
     }
+
+    public function deleteProject($projectId)
+    {
+        $project = Project::find($projectId);
+
+        if (!$project) return response(null, Response::HTTP_NO_CONTENT);
+
+        $project->delete();
+
+        return response(null, Response::HTTP_OK);
+    }
 }

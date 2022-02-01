@@ -53,3 +53,6 @@ Route::get('data/project/{projectId}', [ProjectController::class, 'readProject']
 
 // プロジェクト情報の更新
 Route::patch('update/project', [ProjectController::class, 'updateProject']);
+
+Route::delete('delete/project/{projectId}', [ProjectController::class, 'deleteProject'])
+    ->where('projectId', '[0-9]+');

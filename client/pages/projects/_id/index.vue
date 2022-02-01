@@ -8,12 +8,15 @@
       />
 
       <v-list class="my-8 px-8 pb-8">
-        <v-list-item class="d-flex justify-end">
-          <a
-            v-if="$auth.loggedIn && $auth.user.id === project.userId"
-            :href="`/projects/${project.userId}/edit`"
-          >
-            <v-icon>mdi-pencil</v-icon>
+        <v-list-item
+          v-if="$auth.loggedIn && $auth.user.id === project.userId"
+          class="d-flex justify-end"
+        >
+          <a :href="`/projects/${project.userId}/edit`">
+            <v-icon large>mdi-pencil</v-icon>
+          </a>
+          <a @click="deleteProject">
+            <v-icon large>mdi-delete</v-icon>
           </a>
         </v-list-item>
 
@@ -167,12 +170,19 @@
 <script>
 export default {
   name: 'ProjectPage',
-  async asyncData({ params, $axios, error }) {
+  async asyncData({ params, $axios }) {
     const project = await $axios.$get(`api/data/project/${params.id}`);
 
     return {
       project
     };
   },
+  methods: {
+    async deleteProject() {
+      if (this.$auth.user.id === this.project.userId) await this.$axios.$delete(`api/delete/project/${this.project.id}`);
+
+      this.$router.push('/projects');
+    },
+  }
 }
 </script>
