@@ -120,7 +120,7 @@
           label="求める人材"
           outlined
           :counter="500"
-          :error-messages="descriptionErrors"
+          :error-messages="idealCandidateErrors"
           @input="$v.project.idealCandidate.$touch()"
           @blur="$v.project.idealCandidate.$touch()"
         />
@@ -177,18 +177,6 @@
           作成
         </v-btn>
       </div>
-    </v-card>
-
-    <v-card>
-      <p>
-        {{ project }}
-      </p>
-    </v-card>
-
-    <v-card>
-      <p>
-        {{ projectRolesInvalids }}
-      </p>
     </v-card>
   </main>
 </template>

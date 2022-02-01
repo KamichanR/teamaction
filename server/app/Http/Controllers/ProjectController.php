@@ -62,4 +62,37 @@ class ProjectController extends Controller
 
         return response($project->id, Response::HTTP_OK);
     }
+
+    public function readProject($projectId)
+    {
+        $data = Project::find($projectId);
+
+        if (!$data) return response(null, Response::HTTP_NO_CONTENT);
+
+        $area = $data->area()->first();
+        $projectCategory = $data->projectCategory()->first();
+        $skills = $data->skills()->get();
+        $projectRoles = $data->projectRoles()->get();
+        $user = $data->user()->first();
+
+        $tmp = [
+            'userId' => $data->user_id,
+            'projectTitle' => $data->project_title,
+            'projectImageUri' => $data->project_image_uri,
+            'area' => $area,
+            'projectCategory' => $projectCategory,
+            'skills' => $skills,
+            'purpose' => $data->purpose,
+            'description' => $data->description,
+            'idealCandidate' => $data->ideal_candidate,
+            'merit' => $data->merit,
+            'projectRoles' => $projectRoles,
+            'username' => $user->username,
+            'usericonImageUri' => $user->usericon_image_uri,
+        ];
+
+        $project = json_encode($tmp);
+
+        return response($project, Response::HTTP_OK);
+    }
 }

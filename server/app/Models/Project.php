@@ -12,4 +12,29 @@ class Project extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    public function projectCategory()
+    {
+        return $this->belongsTo(ProjectCategory::class);
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class);
+    }
+
+    public function projectRoles()
+    {
+        return $this->hasMany(ProjectRole::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
