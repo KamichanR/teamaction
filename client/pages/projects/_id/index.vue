@@ -15,7 +15,7 @@
           <a :href="`/projects/${project.userId}/edit`">
             <v-icon large>mdi-pencil</v-icon>
           </a>
-          <a @click="deleteProject">
+          <a @click="deleteConfirm = !deleteConfirm">
             <v-icon large>mdi-delete</v-icon>
           </a>
         </v-list-item>
@@ -163,6 +163,26 @@
           </v-row>
         </v-list-item>
       </v-list>
+
+      <v-dialog
+        v-model="deleteConfirm"
+        class="pa-4"
+        width="600"
+      >
+        <v-card>
+          <v-card-title>
+            プロジェクトを削除しますか？
+          </v-card-title>
+          <v-card-actions>
+            <v-btn @click="deleteConfirm = !deleteConfirm">
+              キャンセル
+            </v-btn>
+            <v-btn class="red accent-4 white--text" @click="deleteProject">
+              削除
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </main>
 </template>
@@ -174,7 +194,8 @@ export default {
     const project = await $axios.$get(`api/data/project/${params.id}`);
 
     return {
-      project
+      project,
+      deleteConfirm: false,
     };
   },
   methods: {
