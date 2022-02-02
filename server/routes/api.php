@@ -34,7 +34,7 @@ Route::get('auth/{provider}', [UserController::class, 'linkWithProvider'])
 // ユーザー情報編集に必要なデータを取得
 Route::get('data/user/edit', [UserController::class, 'getEditData']);
 
-// ユーザー情報を取得
+// ユーザー情報を取得（個別ページ）
 Route::get('data/user/{userId}', [UserController::class, 'getUserData'])
     ->where('userid', '[0-9]+');
 
@@ -54,5 +54,10 @@ Route::get('data/project/{projectId}', [ProjectController::class, 'readProject']
 // プロジェクト情報の更新
 Route::patch('update/project', [ProjectController::class, 'updateProject']);
 
+// プロジェクトの削除
 Route::delete('delete/project/{projectId}', [ProjectController::class, 'deleteProject'])
     ->where('projectId', '[0-9]+');
+
+// ユーザー情報を取得（ユーザー一覧ページ）
+Route::get('data/users/{group}', [UserController::class, 'getUsersData'])
+    ->where('group', '[0-9]+');

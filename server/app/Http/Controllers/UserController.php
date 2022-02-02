@@ -181,4 +181,19 @@ class UserController extends Controller
 
         return response(null, Response::HTTP_OK);
     }
+
+    public function getUsersData($group)
+    {
+        $users = User::offset(($group - 1) * 16)
+                    ->limit(16)
+                    ->get();
+
+        foreach ($users as $user) {
+            $user->skills = $user->skills()->get();
+        }
+
+        $count = User::count();
+
+        return response()->json(['users' => $users, 'count' => $count], Response::HTTP_OK);
+    }
 }
