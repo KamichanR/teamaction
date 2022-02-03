@@ -61,3 +61,7 @@ Route::delete('delete/project/{projectId}', [ProjectController::class, 'deletePr
 // ユーザー情報を取得（ユーザー一覧ページ）
 Route::get('data/users/{group}', [UserController::class, 'getUsersData'])
     ->where('group', '[0-9]+');
+
+// プロジェクト情報を取得（プロジェクト一覧ページ）
+Route::get('data/projects/{group}', [ProjectController::class, 'getProjectsData'])
+    ->where('group', '[0-9]+');

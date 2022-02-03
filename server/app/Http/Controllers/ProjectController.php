@@ -149,4 +149,19 @@ class ProjectController extends Controller
 
         return response(null, Response::HTTP_OK);
     }
+
+    public function getProjectsData($group)
+    {
+        $projects = Project::offset(($group - 1) * 12)
+                        ->limit(12)
+                        ->get();
+
+        foreach ($projects as $project) {
+            $project->user = $project->user()->first();
+        }
+
+        $count = Project::count();
+
+        return response()->json(['projects' => $projects, 'count' => $count], Response::HTTP_OK);
+    }
 }
