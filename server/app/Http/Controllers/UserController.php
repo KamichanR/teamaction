@@ -228,6 +228,6 @@ class UserController extends Controller
                 ->delete();
         }
 
-        return response(['request' => $request, 'userId' => $userId], Response::HTTP_OK);
+        return response(null, Response::HTTP_OK);
     }
 }
