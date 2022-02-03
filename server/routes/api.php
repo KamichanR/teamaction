@@ -78,3 +78,8 @@ Route::post('update/favorite/{projectId}', [ProjectController::class, 'updateFav
 Route::get('data/users/following/{userId}/{group}', [UserController::class, 'getFollowingUsers'])
     ->where('userId', '[0-9]+')
     ->where('group', '[0-9]+');
+
+// フォロワーのユーザーを取得
+Route::get('data/users/followers/{userId}/{group}', [UserController::class, 'getFollowerUsers'])
+    ->where('userId', '[0-9]+')
+    ->where('group', '[0-9]+');
