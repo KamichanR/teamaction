@@ -8,6 +8,7 @@ use App\Models\ProjectCategory;
 use App\Models\ProjectRole;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -75,7 +76,7 @@ class ProjectController extends Controller
         $projectRoles = $data->projectRoles()->get();
         $user = $data->user()->first();
 
-        $tmp = [
+        $project = [
             'id' => $data->id,
             'userId' => $data->user_id,
             'projectTitle' => $data->project_title,
@@ -92,9 +93,15 @@ class ProjectController extends Controller
             'usericonImageUri' => $user->usericon_image_uri,
         ];
 
-        $project = json_encode($tmp);
+        // ログインしている場合、そのユーザーをフォローしているかを取得
+        if (Auth::check()) {
+            $favorite = DB::table('favorites')
+                        ->where('user_id', Auth::id())
+                        ->where('project_id', $data->id)
+                        ->exists();
+        }
 
-        return response($project, Response::HTTP_OK);
+        return response()->json(['project' => $project, 'favorite' => $favorite], Response::HTTP_OK);
     }
 
     public function updateProject(Request $request)
@@ -163,5 +170,33 @@ class ProjectController extends Controller
         $count = Project::count();
 
         return response()->json(['projects' => $projects, 'count' => $count], Response::HTTP_OK);
+    }
+
+    public function updateFavorite($projectId, Request $request)
+    {
+        // 既にお気に入りかを取得
+        $exist = DB::table('favorites')
+                    ->where([
+                        'user_id' => Auth::id(),
+                        'project_id' => (int) $projectId,
+                    ])
+                    ->exists();
+
+        if ($request->favorite && !$exist) {
+            DB::table('favorites')
+                ->insert([
+                    'user_id' => Auth::id(),
+                    'project_id' => (int) $projectId,
+                ]);
+        } else if (!$request->favorite && $exist) {
+            DB::table('favorites')
+                ->where([
+                    'user_id' => Auth::id(),
+                    'project_id' => (int) $projectId,
+                ])
+                ->delete();
+        }
+
+        return response(null, Response::HTTP_OK);
     }
 }

@@ -184,17 +184,49 @@
         </v-card>
       </v-dialog>
     </v-card>
+
+    <v-btn
+      v-if="$auth.loggedIn && $auth.user.id !== project.userId"
+      class="favorite-button"
+      fab
+      icon
+      large
+      outlined
+    >
+
+      <v-icon
+        v-if="favorite"
+        color="success"
+        large
+        @click="favorite = !favorite"
+      >
+        mdi-star
+      </v-icon>
+
+      <v-icon
+        v-else
+        large
+        @click="favorite = !favorite"
+      >
+        mdi-star-outline
+      </v-icon>
+    </v-btn>
   </main>
 </template>
 
 <script>
 export default {
   name: 'ProjectPage',
+  async beforeRouteLeave(to, from, next) {
+    if (this.$auth.loggedIn) await this.$axios.$post(`/api/update/favorite/${this.project.id}`, {favorite: this.favorite});
+    next();
+  },
   async asyncData({ params, $axios }) {
-    const project = await $axios.$get(`api/data/project/${params.id}`);
+    const data = await $axios.$get(`api/data/project/${params.id}`);
 
     return {
-      project,
+      project: data.project,
+      favorite: data.favorite ?? false,
       deleteConfirm: false,
     };
   },
@@ -207,3 +239,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.favorite-button {
+  bottom: 5%;
+  position: absolute;
+  right: 5%;
+}
+</style>
