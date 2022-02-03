@@ -73,3 +73,8 @@ Route::post('update/follow/{userId}', [UserController::class, 'updateFollow'])
 // お気に入り情報の更新
 Route::post('update/favorite/{projectId}', [ProjectController::class, 'updateFavorite'])
     ->where('projectId', '[0-9]+');
+
+// フォロー中のユーザーを取得
+Route::get('data/users/following/{userId}/{group}', [UserController::class, 'getFollowingUsers'])
+    ->where('userId', '[0-9]+')
+    ->where('group', '[0-9]+');

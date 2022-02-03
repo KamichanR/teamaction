@@ -89,6 +89,22 @@
             プロフィール
           </v-btn>
         </v-list-item>
+        <v-list-item>
+          <v-btn
+            block
+            :to="`/users/${$auth.user.id}/following`"
+          >
+            フォロー中
+          </v-btn>
+        </v-list-item>
+        <v-list-item>
+          <v-btn
+            block
+            :to="`/users/${$auth.user.id}/followers`"
+          >
+            フォロワー
+          </v-btn>
+        </v-list-item>
         <v-divider/>
         <v-list-item>
           <v-btn

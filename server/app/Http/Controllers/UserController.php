@@ -230,4 +230,26 @@ class UserController extends Controller
 
         return response(null, Response::HTTP_OK);
     }
+
+    public function getFollowingUsers($userId, $group)
+    {
+        $tmp = DB::table('follows')
+                            ->where('follow_user_id', (int) $userId)
+                            ->offset(($group - 1) * 24)
+                            ->limit(24)
+                            ->select('followed_user_id')
+                            ->get()
+                            ->toArray();
+
+        $followingUsers = array_map(fn($user): User =>
+            User::find($user->followed_user_id, ['id', 'username', 'usericon_image_uri']),
+            $tmp
+        );
+
+        $count = DB::table('follows')
+                    ->where('follow_user_id', (int) $userId)
+                    ->count();
+
+        return response()->json(['followingUsers' => $followingUsers, 'count' => $count], Response::HTTP_OK);
+    }
 }
