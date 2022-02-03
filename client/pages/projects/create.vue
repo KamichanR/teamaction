@@ -351,7 +351,7 @@ export default {
       }
 
       // プロジェクトの作成とIDの取得
-      const projectId = await this.$axios.$post('/api/update/project', this.project);
+      const projectId = await this.$axios.$post('/api/create/project', this.project);
 
       this.$router.push(`/projects/${projectId}`);
     },
