@@ -200,19 +200,51 @@
         </v-col>
       </v-row>
     </v-card>
+
+    <v-btn
+      v-if="$auth.loggedIn && $auth.user.id !== user.userId"
+      class="follow-button"
+      fab
+      icon
+      large
+      outlined
+    >
+
+      <v-icon
+        v-if="follow"
+        large
+        @click="follow = !follow"
+      >
+        mdi-account-minus
+      </v-icon>
+
+      <v-icon
+        v-else
+        color="success"
+        large
+        @click="follow = !follow"
+      >
+        mdi-account-plus
+      </v-icon>
+    </v-btn>
   </main>
 </template>
 
 <script>
 export default {
   name: 'UserPage',
+  async beforeRouteLeave(to, from, next) {
+    if (this.$auth.loggedIn) await this.$axios.$post(`/api/update/follow/${this.user.userId}`, {follow: this.follow});
+    next();
+  },
   async asyncData({ params, $axios, error }) {
-    const user = await $axios.$get(`api/data/user/${params.id}`);
+    const data = await $axios.$get(`api/data/user/${params.id}`);
 
-    if (!user) return error({ statusCode: 404 });
+    if (!data.user) return error({ statusCode: 404 });
 
     return {
-      user,
+      user: data.user,
+      follow: data.follow ?? false,
     }
   },
 }
@@ -225,5 +257,11 @@ export default {
 
 .organization:last-child:after {
   content: none;
+}
+
+.follow-button {
+  bottom: 5%;
+  position: absolute;
+  right: 5%;
 }
 </style>

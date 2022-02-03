@@ -65,3 +65,7 @@ Route::get('data/users/{group}', [UserController::class, 'getUsersData'])
 // プロジェクト情報を取得（プロジェクト一覧ページ）
 Route::get('data/projects/{group}', [ProjectController::class, 'getProjectsData'])
     ->where('group', '[0-9]+');
+
+// フォロー情報の更新
+Route::post('update/follow/{userId}', [UserController::class, 'updateFollow'])
+    ->where('userId', '[0-9]+');

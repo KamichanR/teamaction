@@ -50,7 +50,7 @@ class UserController extends Controller
         $careers = $data->careers()->get();
         $certifications = $data->certifications()->get();
 
-        $tmp = [
+        $user = [
             'userId' => $data->id,
             'username' => $data->username,
             'linkedWithTwitter' => $data->linked_with_twitter,
@@ -69,9 +69,15 @@ class UserController extends Controller
             'certifications' => $certifications,
         ];
 
-        $user = json_encode($tmp);
+        // ログインしている場合、そのユーザーをフォローしているかを取得
+        if (Auth::check()) {
+            $follow = DB::table('follows')
+                        ->where('follow_user_id', Auth::id())
+                        ->where('followed_user_id', $data->id)
+                        ->exists();
+        }
 
-        return response($user, Response::HTTP_OK);
+        return response()->json(['user' => $user, 'follow' => $follow], Response::HTTP_OK);
     }
 
     public function getEditData()
@@ -195,5 +201,33 @@ class UserController extends Controller
         $count = User::count();
 
         return response()->json(['users' => $users, 'count' => $count], Response::HTTP_OK);
+    }
+
+    public function updateFollow($userId, Request $request)
+    {
+        // 既にフォロー済みかを取得
+        $exist = DB::table('follows')
+                    ->where([
+                        'follow_user_id' => Auth::id(),
+                        'followed_user_id' => (int) $userId,
+                    ])
+                    ->exists();
+
+        if ($request->follow === true && $exist === false) {
+            DB::table('follows')
+                ->insert([
+                    'follow_user_id' => Auth::id(),
+                    'followed_user_id' => (int) $userId,
+                ]);
+        } else if ($request->follow === false && $exist === true) {
+            DB::table('follows')
+                ->where([
+                    'follow_user_id' => Auth::id(),
+                    'followed_user_id' => (int) $userId,
+                ])
+                ->delete();
+        }
+
+        return response(['request' => $request, 'userId' => $userId], Response::HTTP_OK);
     }
 }
