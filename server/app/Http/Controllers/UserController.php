@@ -188,10 +188,28 @@ class UserController extends Controller
         return response(null, Response::HTTP_OK);
     }
 
-    public function getUsersData($group)
+    public function getUsersData($group, Request $request)
     {
-        $users = User::offset(($group - 1) * 16)
-                    ->limit(16)
+        $workstyle = (int) $request->workstyle;
+        $skill = (int) $request->skill;
+        $area = (int) $request->area;
+
+        // 条件に合うユーザーを取得
+        $users = User::select();
+        if ($workstyle !== 0) {
+            $users = $users->whereHas('workstyles', function($q) use($workstyle) {
+                $q->where('id', $workstyle);
+            });
+        }
+        if ($skill !== 0) {
+            $users = $users->whereHas('skills', function($q) use ($skill){
+                $q->where('id', $skill);
+            });
+        }
+        if ($area !== 0) $users = $users->where('area_id', $area);
+
+        $users = $users->skip(($group - 1) * 16)
+                    ->take(16)
                     ->get();
 
         foreach ($users as $user) {
@@ -200,7 +218,17 @@ class UserController extends Controller
 
         $count = User::count();
 
-        return response()->json(['users' => $users, 'count' => $count], Response::HTTP_OK);
+        $workstyles = Workstyle::all();
+        $areas = Area::all();
+        $skills = Skill::all();
+
+        return response()->json([
+            'users' => $users,
+            'count' => $count,
+            'workstyles' => $workstyles,
+            'areas' => $areas,
+            'skills' => $skills,
+        ], Response::HTTP_OK);
     }
 
     public function updateFollow($userId, Request $request)
