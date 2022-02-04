@@ -11,8 +11,13 @@ class Skill extends Model
 
     public $timestamps = false;
 
-    function user()
+    public function user()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
     }
 }

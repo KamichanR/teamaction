@@ -157,11 +157,28 @@ class ProjectController extends Controller
         return response(null, Response::HTTP_OK);
     }
 
-    public function getProjectsData($group)
+    public function getProjectsData($group, Request $request)
     {
-        $projects = Project::offset(($group - 1) * 12)
-                        ->limit(12)
-                        ->get();
+        $skill = (int) $request->skill;
+        $projectCategory = (int) $request->projectCategory;
+        $area = (int) $request->area;
+
+        // 条件に合うプロジェクトを選択
+        if ($skill !== 0) {
+            $projects = Project::whereHas('skills', function($q) use($skill) {
+                $q->where('id', $skill);
+            });
+        } else {
+            $projects = Project::all();
+        }
+
+        if ($projectCategory !== 0) $projects = $projects->where('project_category_id', $projectCategory);
+        if ($area !== 0) $projects = $projects->where('area_id', $area);
+
+        // 指定箇所から12個だけ取得
+        $projects = $projects->skip(($group - 1) * 12)
+                        ->take(12);
+        if ($skill !== 0) $projects = $projects->get();
 
         foreach ($projects as $project) {
             $project->user = $project->user()->first();
@@ -169,7 +186,17 @@ class ProjectController extends Controller
 
         $count = Project::count();
 
-        return response()->json(['projects' => $projects, 'count' => $count], Response::HTTP_OK);
+        $areas = Area::all();
+        $skills = Skill::all();
+        $projectCategories = ProjectCategory::all();
+
+        return response()->json([
+            'projects' => $projects,
+            'count' => $count,
+            'areas' => $areas,
+            'skills' => $skills,
+            'projectCategories' => $projectCategories,
+        ], Response::HTTP_OK);
     }
 
     public function updateFavorite($projectId, Request $request)
