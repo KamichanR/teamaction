@@ -1,6 +1,7 @@
 <template>
   <main>
     <v-list>
+      <h1>フォロー中</h1>
       <v-row>
         <v-col
           v-for="(followingUser, index) in followingUsers"
@@ -56,7 +57,17 @@ export default {
       followingUsers: data.followingUsers,
       page: Number(group),
       pageLength,
-    }
-  }
+    };
+  },
+  watch: {
+    $route() {
+      location.reload();
+    },
+  },
+  methods: {
+    changePage(index) {
+      this.$router.push(`/users/${this.$auth.user.id}/following?group=${index}`);
+    },
+  },
 }
 </script>

@@ -159,6 +159,8 @@ export default {
     messagingSenderId: process.env.MESSAGING_SENDER_ID,
     appId: process.env.APP_ID,
     measurementId: process.env.MEASUREMENT_ID,
+    mixPusherAppKey: process.env.MIX_PUSHER_APP_KEY,
+    mixPusherAppCluster: process.env.MIX_PUSHER_APP_CLUSTER,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

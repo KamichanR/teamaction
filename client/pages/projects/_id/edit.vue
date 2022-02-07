@@ -241,8 +241,9 @@ export default {
   },
   async asyncData({ params, $axios, error }) {
     // プロジェクト情報取得
-    const project = await $axios.$get(`api/data/project/${params.id}`);
+    let project = await $axios.$get(`api/data/project/${params.id}`);
     if (!project) error({ statusCode: 404 });
+    project = project.project;
 
     const data = await $axios.$get('api/data/project');
 

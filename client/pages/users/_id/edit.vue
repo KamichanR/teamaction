@@ -298,10 +298,11 @@ export default {
   ],
   async asyncData({ params, $axios, error }) {
     // ユーザー情報取得
-    const user = await $axios.$get(`api/data/user/${params.id}`);
+    let user = await $axios.$get(`api/data/user/${params.id}`);
     const data = await $axios.$get('api/data/user/edit');
 
     if (!user) error({ statusCode: 404 });
+    user = user.user;
 
     // Firebase Storageから画像を取得
     const usericonImage = await fetch(user.usericonImageUri)

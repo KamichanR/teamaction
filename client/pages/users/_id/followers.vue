@@ -1,6 +1,7 @@
 <template>
   <main>
     <v-list>
+      <h1>フォロワー</h1>
       <v-row>
         <v-col
           v-for="(followerUser, index) in followerUsers"
@@ -57,6 +58,16 @@ export default {
       page: Number(group),
       pageLength,
     }
-  }
+  },
+  watch: {
+    $route() {
+      location.reload();
+    },
+  },
+  methods: {
+    changePage(index) {
+      this.$router.push(`/users/${this.$auth.user.id}/followers?group=${index}`);
+    },
+  },
 }
 </script>

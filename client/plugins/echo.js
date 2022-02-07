@@ -1,11 +1,14 @@
 import Echo from 'laravel-echo';
 
-window.Pusher = require('pusher-js');
+export default function ({ $config }) {
+  window.Pusher = require('pusher-js');
 
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    forceTLS: true,
-    encrypted: true,
-});
+  window.Echo = new Echo({
+      broadcaster: 'pusher',
+      key: $config.mixPusherAppKey,
+      cluster: $config.mixPusherAppCluster,
+      forceTLS: true,
+      encrypted: true,
+  });
+}
+

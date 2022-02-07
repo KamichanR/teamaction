@@ -54,8 +54,8 @@ class ProjectController extends Controller
         foreach ($request->projectRoles as $projectRole) {
             ProjectRole::create([
                 'project_id' => $project->id,
-                'role_title' => $projectRole['roleTitle'],
-                'number_of_applicants' => $projectRole['numberOfApplicants'],
+                'role_title' => $projectRole['role_title'],
+                'number_of_applicants' => $projectRole['number_of_applicants'],
                 'close' => $projectRole['close'],
                 'description' => $projectRole['description'],
             ]);
@@ -99,9 +99,10 @@ class ProjectController extends Controller
                         ->where('user_id', Auth::id())
                         ->where('project_id', $data->id)
                         ->exists();
+            return response()->json(['project' => $project, 'favorite' => $favorite], Response::HTTP_OK);
         }
 
-        return response()->json(['project' => $project, 'favorite' => $favorite], Response::HTTP_OK);
+        return response()->json(['project' => $project], Response::HTTP_OK);
     }
 
     public function updateProject(Request $request)

@@ -12,7 +12,7 @@
           v-if="$auth.loggedIn && $auth.user.id === project.userId"
           class="d-flex justify-end"
         >
-          <a :href="`/projects/${project.userId}/edit`">
+          <a :href="`/projects/${project.id}/edit`">
             <v-icon large>mdi-pencil</v-icon>
           </a>
           <a @click="deleteConfirm = !deleteConfirm">
@@ -152,7 +152,7 @@
                     </span>
                   </v-list-item>
 
-                  <v-list-item>
+                  <v-list-item v-if="$auth.loggedIn">
                     <v-btn
                       class="font-weight-bold amber darken-3"
                       @click="apply"
