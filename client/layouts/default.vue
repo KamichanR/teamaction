@@ -33,16 +33,28 @@
       <v-spacer/>
       <div v-if="$auth.loggedIn">
         <v-btn
-          class="mx-2"
-          @click="$auth.logout()"
+          icon
+          to="/notifications"
         >
-          ログアウト
+          <v-icon v-if="!unreadNotifications">
+            mdi-bell
+          </v-icon>
+          <v-icon v-else color="red">
+            mdi-bell-badge
+          </v-icon>
         </v-btn>
+
         <v-btn
           class="mx-2"
           to="/projects/create"
         >
           新規作成
+        </v-btn>
+        <v-btn
+          class="mx-2"
+          @click="$auth.logout()"
+        >
+          ログアウト
         </v-btn>
       </div>
       <div v-else>
@@ -149,7 +161,7 @@ import { getAuth, GoogleAuthProvider, linkWithPopup, TwitterAuthProvider } from 
 
 export default {
   name: 'DefaultLayout',
-  data() {
+  data({ $auth, $axios }) {
     return {
       disabledButton: false,
       linkWithTwitterLoading: false,
@@ -170,6 +182,18 @@ export default {
       right: true,
       rightDrawer: false,
       title: 'TEAMACTION',
+      unreadNotifications: false,
+    };
+  },
+  async mounted() {
+    if (this.$auth.loggedIn) {
+      const data = await this.$axios.$get(`api/data/unread-notifications/${this.$auth.user.id}`);
+      this.unreadNotifications = data.notifications.length !== 0;
+
+      window.Echo.channel('project-applied')
+        .listen('ProjectApplied', (data) => {
+          this.unreadNotifications = true;
+        });
     }
   },
   methods: {
@@ -207,7 +231,7 @@ export default {
         this.linkWithGoogleLoading = false;
         this.disabledButton = false;
       }
-    }
+    },
   },
 }
 </script>

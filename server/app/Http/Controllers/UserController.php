@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ProjectApplied;
+use App\Models\ApplyRequest;
 use App\Models\Area;
+use App\Models\Project;
 use App\Models\Skill;
 use App\Models\User;
 use App\Models\Workstyle;
@@ -301,5 +304,20 @@ class UserController extends Controller
                     ->count();
 
         return response()->json(['followerUsers' => $followerUsers, 'count' => $count]);
+    }
+
+    public function applyProject(Request $request)
+    {
+        $appliedUser = User::find($request->userId);
+        $project = Project::find($request->projectId);
+
+        $applyRequest = ApplyRequest::create([
+            'user_id' => $appliedUser->id,
+            'project_id' => $project->id,
+        ]);
+
+        event(new ProjectApplied($appliedUser, $project));
+
+        return response(null, Response::HTTP_OK);
     }
 }

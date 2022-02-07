@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplyRequestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\ProjectController;
@@ -83,3 +84,26 @@ Route::get('data/users/following/{userId}/{group}', [UserController::class, 'get
 Route::get('data/users/followers/{userId}/{group}', [UserController::class, 'getFollowerUsers'])
     ->where('userId', '[0-9]+')
     ->where('group', '[0-9]+');
+
+// プロジェクトの参加リクエスト
+Route::post('project-apply/{userId}/{projectId}', [UserController::class, 'applyProject'])
+    ->where('userId', '[0-9]+')
+    ->where('projectId', '[0-9]+');
+
+// 未読のお知らせを取得
+Route::get('data/unread-notifications/{userId}', [ApplyRequestController::class, 'getUnreadNotifications'])
+    ->where('userId', '[0-9]+');
+
+// お知らせを取得
+Route::get('data/notifications/{userId}', [ApplyRequestController::class, 'getNotifications'])
+    ->where('userId', '[0-9]+');
+
+// 参加リクエストを承認
+Route::patch('accept/request/{userId}/{projectId}', [ApplyRequestController::class, 'acceptRequest'])
+    ->where('userId', '[0-9]+')
+    ->where('projectId', '[0-9]+');
+
+// 参加リクエストを承認
+Route::patch('deny/request/{userId}/{projectId}', [ApplyRequestController::class, 'denyRequest'])
+    ->where('userId', '[0-9]+')
+    ->where('projectId', '[0-9]+');

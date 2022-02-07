@@ -153,7 +153,10 @@
                   </v-list-item>
 
                   <v-list-item>
-                    <v-btn class="font-weight-bold amber darken-3">
+                    <v-btn
+                      class="font-weight-bold amber darken-3"
+                      @click="apply"
+                    >
                       応募する
                     </v-btn>
                   </v-list-item>
@@ -235,6 +238,12 @@ export default {
       if (this.$auth.user.id === this.project.userId) await this.$axios.$delete(`api/delete/project/${this.project.id}`);
 
       this.$router.push('/projects');
+    },
+    apply() {
+      this.$axios.$post(`api/project-apply/${this.$auth.user.id}/${this.project.id}`, {
+        userId: this.$auth.user.id,
+        projectId: this.project.id,
+      });
     },
   }
 }

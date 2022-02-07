@@ -24,6 +24,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/vuelidate',
+    '@/plugins/echo',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -37,6 +38,7 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/laravel-echo',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -52,6 +54,15 @@ export default {
     // https://firebase.nuxtjs.org/
     '@nuxtjs/firebase',
   ],
+
+  echo: {
+    broadcaster: 'poster',
+    plugins: ['@/plugins/echo'],
+    key: process.env.MIX_PUSHER_APP_KEY,
+    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    forceTLS: true,
+    encrypted: true,
+  },
 
   // Firebase module configuration: https://firebase.nuxtjs.org/
   firebase: {
